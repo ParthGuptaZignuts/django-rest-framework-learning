@@ -1,21 +1,29 @@
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
 from rest_framework import status
-from home.serializer import PeopleSerializer,CustomSerializer
+from home.serializer import PeopleSerializer, CustomSerializer
 from home.models import Person
 from django.shortcuts import get_object_or_404
 
 @api_view(['POST'])
 def login(request):
-    data = request.data 
+    data = request.data
     serialized_data = CustomSerializer.serialize(data=data)
     if serialized_data.is_valid():
-        return Response({"message":"success"},serialized_data.validated_data, status=status.HTTP_200_OK)
+        return Response({"message": "success"}, serialized_data.validated_data, status=status.HTTP_200_OK)
     return Response(serialized_data.errors, status=status.HTTP_400_BAD_REQUEST)
+
 @api_view(['GET'])
 def index(request):
     data = Person.objects.all()
     serialized_data = PeopleSerializer(data, many=True)
+    return Response(serialized_data.data, status=status.HTTP_200_OK)
+
+@api_view(['GET'])
+def particularIndex(request, id):
+    # Use the id passed as a URL parameter
+    person = get_object_or_404(Person, id=id)
+    serialized_data = PeopleSerializer(person)
     return Response(serialized_data.data, status=status.HTTP_200_OK)
 
 @api_view(['POST'])
@@ -48,4 +56,4 @@ def updatePeoplePut(request):
 def deletePeople(request):
     person = get_object_or_404(Person, id=request.data.get('id'))
     person.delete()
-    return Response({"message": "People deleted successfully"},status=status.HTTP_204_NO_CONTENT)
+    return Response({"message": "Person deleted successfully"}, status=status.HTTP_204_NO_CONTENT)
