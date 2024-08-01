@@ -1,10 +1,17 @@
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
 from rest_framework import status
-from home.serializer import PeopleSerializer
+from home.serializer import PeopleSerializer,CustomSerializer
 from home.models import Person
 from django.shortcuts import get_object_or_404
 
+@api_view(['POST'])
+def login(request):
+    data = request.data 
+    serialized_data = CustomSerializer.serialize(data=data)
+    if serialized_data.is_valid():
+        return Response({"message":"success"},serialized_data.validated_data, status=status.HTTP_200_OK)
+    return Response(serialized_data.errors, status=status.HTTP_400_BAD_REQUEST)
 @api_view(['GET'])
 def index(request):
     data = Person.objects.all()
