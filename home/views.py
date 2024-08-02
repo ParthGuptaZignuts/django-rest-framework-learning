@@ -1,9 +1,21 @@
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
 from rest_framework import status
-from home.serializer import PeopleSerializer, CustomSerializer
+from home.serializer import PeopleSerializer, CustomSerializer , RegisterSerializer
 from home.models import Person
 from django.shortcuts import get_object_or_404
+from django.contrib.auth.models import User
+from rest_framework.views import APIView
+
+class RegisterApi(APIView):
+    def post(self, request):
+      data = request.data 
+      serialized_data = RegisterSerializer.serialize(data=data)
+
+      if not serialized_data.is_valid():
+        return Response(serialized_data.errors, status=status.HTTP_400_BAD_REQUEST)
+      return Response(serialized_data.validated_data, status=status.HTTP_201_CREATED)
+
 
 @api_view(['POST'])
 def login(request):

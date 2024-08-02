@@ -1,4 +1,4 @@
-from home.views import index, createPeople, updatePeoplePut, updatePeoplePatch, deletePeople ,particularIndex
+from home.views import index, createPeople, updatePeoplePut, updatePeoplePatch, deletePeople ,particularIndex, RegisterApi
 from django.urls import path,include
 from products.views import ProductsApi
 from peoples.views import PeoplesViewSet
@@ -17,4 +17,5 @@ urlpatterns = [
     path('delete-people/', deletePeople),
     path('product-api/', ProductsApi.as_view()), 
     path('product-api/<int:pk>/', ProductsApi.as_view()), 
+    path('register/',RegisterApi.as_view()),
 ]
