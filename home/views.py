@@ -1,11 +1,13 @@
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
 from rest_framework import status
-from home.serializer import PeopleSerializer, CustomSerializer , RegisterSerializer
+from home.serializer import PeopleSerializer, CustomSerializer , RegisterSerializer , LoginSerializer
 from home.models import Person
 from django.shortcuts import get_object_or_404
 from django.contrib.auth.models import User
 from rest_framework.views import APIView
+from django.contrib.auth import authenticate
+from rest_framework.authtoken.models import Token
 
 class RegisterApi(APIView):
     def post(self, request):
@@ -16,6 +18,15 @@ class RegisterApi(APIView):
         return Response(serialized_data.errors, status=status.HTTP_400_BAD_REQUEST)
       return Response(serialized_data.validated_data, status=status.HTTP_201_CREATED)
 
+class LoginApi(APIView):
+    def post(self, request):
+        serializer = LoginSerializer(data=request.data)
+        if serializer.is_valid():
+            user = serializer.validated_data['user']
+            token, created = Token.objects.get_or_create(user=user)
+            return Response({"token": token.key}, status=status.HTTP_200_OK)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+    
 
 @api_view(['POST'])
 def login(request):

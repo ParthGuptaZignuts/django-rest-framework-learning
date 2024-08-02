@@ -2,6 +2,18 @@ import re
 from rest_framework import serializers
 from .models import Person, Color
 from django.contrib.auth.models import User
+from django.contrib.auth import authenticate
+
+class LoginSerializer(serializers.Serializer):
+    username = serializers.CharField()
+    password = serializers.CharField(write_only=True)
+
+    def validate(self, data):
+        user = authenticate(username=data.get('username'), password=data.get('password'))
+        if user is None:
+            raise serializers.ValidationError("Invalid username or password.")
+        data['user'] = user
+        return data
 
 class RegisterSerializer(serializers.Serializer):
     username = serializers.CharField()
