@@ -1,8 +1,14 @@
 from home.views import index, createPeople, updatePeoplePut, updatePeoplePatch, deletePeople ,particularIndex
-from django.urls import path
+from django.urls import path,include
 from products.views import ProductsApi
+from peoples.views import PeoplesViewSet
+from rest_framework.routers import DefaultRouter
+
+router = DefaultRouter()
+router.register(r'peoples', PeoplesViewSet, basename='people')
 
 urlpatterns = [
+    path('',include(router.urls)),
     path('index/', index),
     path('index/<int:id>/', particularIndex),
     path('create-people/', createPeople),
