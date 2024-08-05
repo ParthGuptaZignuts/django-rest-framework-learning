@@ -41,7 +41,8 @@ INSTALLED_APPS = [
     'home',
     'products',
     'peoples',
-    'rest_framework.authtoken'
+    'rest_framework.authtoken',
+    'items'
 ]
 
 MIDDLEWARE = [
